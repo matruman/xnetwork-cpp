@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "Session.hpp"
 #include "RequestHandler.hpp"
+#include "ApplicationContext.hpp"
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -20,7 +21,8 @@ class listener : public std::enable_shared_from_this<listener>
     net::io_context& ioc_;
     tcp::acceptor acceptor_;
     std::shared_ptr<std::string const> doc_root_;
-    RequestHandler  handler;
+    ApplicationContext context;
+    RequestHandler handler;
 
 public:
     listener(net::io_context& ioc, tcp::endpoint endpoint, 

@@ -76,6 +76,8 @@
         "semaphore": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "cfenv": "cpp",
+        "set": "cpp"
     }
 }

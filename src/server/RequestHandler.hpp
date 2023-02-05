@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Router.hpp"
+#include "ApplicationContext.hpp"
 #include "utils.hpp"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
@@ -17,9 +18,12 @@ class session;
 class RequestHandler {
 
 private:
+    ApplicationContext &context;
     Router  router;
 
 public:
+
+    RequestHandler(ApplicationContext &context);
 
     // Append an HTTP rel-path to a local filesystem path.
     // The returned path is normalized for the platform.

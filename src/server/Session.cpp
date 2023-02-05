@@ -1,11 +1,11 @@
 #include "Session.hpp"
 #include "RequestHandler.hpp"
 
-session::session(RequestHandler &handler, tcp::socket&& socket, std::shared_ptr<std::string const> const& doc_root) 
+session::session(RequestHandler &handler, tcp::socket&& socket, 
+    std::shared_ptr<std::string const> const& doc_root) 
     : handler(handler), stream_(std::move(socket)),
         doc_root_(doc_root) , lambda_(*this)
 {}
-
 
 // Start the asynchronous operation
 void    session::run()

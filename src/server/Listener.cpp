@@ -1,8 +1,8 @@
 #include "Listener.hpp"
 
 listener::listener(net::io_context& ioc, tcp::endpoint endpoint, 
-                std::shared_ptr<std::string const> const& doc_root) :
-            ioc_(ioc), acceptor_(net::make_strand(ioc)) , doc_root_(doc_root)
+                std::shared_ptr<std::string const> const& doc_root)
+    : ioc_(ioc), acceptor_(net::make_strand(ioc)) , doc_root_(doc_root), handler(context)
 {
     beast::error_code ec;
 

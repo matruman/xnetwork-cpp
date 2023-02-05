@@ -1,6 +1,10 @@
 #include "RequestHandler.hpp"
 #include "Session.hpp"
 
+RequestHandler::RequestHandler(ApplicationContext &context_) : context(context_), router(context_)
+{
+}
+
 // Append an HTTP rel-path to a local filesystem path.
 // The returned path is normalized for the platform.
 std::string     RequestHandler::path_cat(beast::string_view base, beast::string_view path)
@@ -73,7 +77,7 @@ void RequestHandler::handle_request(const std::string doc_root,
     session::send_lambda& send_)
 {
     // Make sure we can handle the method
-    if( req.method() != http::verb::get)
+    if( req.method() != http::verb::get && req.method() != http::verb::post)
         return send_(bad_request("Unknown HTTP-method", req));
 
     // Request path must be absolute and not contain "..".
@@ -111,6 +115,11 @@ void RequestHandler::handle_request(const std::string doc_root,
     catch (std::invalid_argument &ex)
     {
         std::cerr << ex.what() << std::endl;
+        return send_(not_found(req.target(), req));
+    }
+    catch (SAException &ex)
+    {
+        std::cerr << saStrToStr(ex.ErrMessage()) << std::endl;
         return send_(not_found(req.target(), req));
     }
 }

@@ -3,14 +3,14 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**", "C:/boost/include/boost-1_81"
+                "${workspaceFolder}/include", "${workspaceFolder}/src", "C:/boost/include/boost-1_81", "C:/SQLAPI/mingw-w64/include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:\\mingw64\\bin\\gcc.exe",
+            "compilerPath": "C:/mingw64/bin/g++.exe",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "windows-gcc-x64"

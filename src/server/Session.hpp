@@ -2,6 +2,9 @@
 #define SESSION_HPP
 
 #include "utils.hpp"
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <memory>
 
