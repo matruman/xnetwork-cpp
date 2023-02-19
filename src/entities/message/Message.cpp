@@ -31,7 +31,7 @@ json::object        Message::getJsonObject() const
     obj.emplace("message_id", getMessageID().get());
     obj.emplace("sender_id", getSenderID().get());
     obj.emplace("receiver_id", getReceiverID().get());
-    obj.emplace("sebder_name", getSenderName().get());
+    obj.emplace("sender_name", getSenderName().get());
     obj.emplace("text", getText().get());
     obj.emplace("date", getDate().get());
     return obj;

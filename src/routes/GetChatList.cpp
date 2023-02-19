@@ -1,30 +1,27 @@
-#include "GetOwnPosts.hpp"
-#include <entities/message/MessageDao.hpp>
+#include "GetChatList.hpp"
 
-GetOwnPosts::GetOwnPosts(ApplicationContext &context) : AbstractRoute(context)
+GetChatList::GetChatList(ApplicationContext &context) : AbstractRoute(context)
 {
 }
 
-GetOwnPosts::~GetOwnPosts()
+GetChatList::~GetChatList()
 {
 }
 
-void    GetOwnPosts::resolve(http::request<http::string_body>& req, urls::url_view& params,
+void    GetChatList::resolve(http::request<http::string_body>& req, urls::url_view& params,
                         UserSession& session, send_lambda& send_)
 {
-    MessageDao &dao = getContext().getMessageDao();
     int offset = getIntFromUrlView(params, "offset");
-    
-    vector<Message> posts = dao.getUserPosts(session.getUserID().get(), offset);
-    json::array postsJson;
-    for (auto &post : posts)
+    vector<Chat> chats = getContext().getChatDao().getChats(session.getUserID().get(), offset);
+    json::array chatsJson;
+    for (auto &chat : chats)
     {
-        postsJson.emplace_back(post.getJsonObject());
+        chatsJson.emplace_back(chat.getJsonObject());
     }
 
     json::object payload;
     payload.emplace("status", true);
-    payload.emplace("data", postsJson);
+    payload.emplace("data", chatsJson);
 
     http::response<http::string_body> res{http::status::ok, req.version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);

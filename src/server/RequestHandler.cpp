@@ -1,5 +1,15 @@
 #include "RequestHandler.hpp"
 #include "Session.hpp"
+#include "send_lambda.hpp"
+#include <boost/url.hpp>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+namespace urls = boost::urls;
+
+using std::string;
+using std::vector;
 
 RequestHandler::RequestHandler(ApplicationContext &context_) : context(context_), router(context_)
 {
@@ -29,97 +39,55 @@ std::string     RequestHandler::path_cat(beast::string_view base, beast::string_
     return result;
 }
 
-// Returns a bad request response
-http::response<http::string_body>   RequestHandler::bad_request(beast::string_view why, 
-    http::request<http::string_body> req)
-{
-    http::response<http::string_body> res{http::status::bad_request, req.version()};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, "text/html");
-    res.keep_alive(req.keep_alive());
-    res.body() = std::string(why);
-    res.prepare_payload();
-    return res;
-}
-
-// Returns a not found response
-http::response<http::string_body>   RequestHandler::not_found(beast::string_view target, 
-    http::request<http::string_body> req)
-{
-    http::response<http::string_body> res{http::status::not_found, req.version()};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, "text/html");
-    res.keep_alive(req.keep_alive());
-    res.body() = "The resource '" + std::string(target) + "' was not found.";
-    res.prepare_payload();
-    return res;
-}
-
-// Returns a server error response
-http::response<http::string_body>   RequestHandler::server_error(beast::string_view what, 
-    http::request<http::string_body> req)
-{
-    http::response<http::string_body> res{http::status::internal_server_error, req.version()};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, "text/html");
-    res.keep_alive(req.keep_alive());
-    res.body() = "An error occurred: '" + std::string(what) + "'";
-    res.prepare_payload();
-    return res;
-}
-
 // This function produces an HTTP response for the given
 // request. The type of the response object depends on the
 // contents of the request, so the interface requires the
 // caller to pass a generic lambda for receiving the response.
 void RequestHandler::handle_request(const std::string doc_root, 
-    http::request<http::string_body>& req, 
-    session::send_lambda& send_)
+    http::request<http::string_body>& req, send_lambda& send_)
 {
+    std::cout << "Request handling started\n"; 
     // Make sure we can handle the method
     if( req.method() != http::verb::get && req.method() != http::verb::post)
         return send_(bad_request("Unknown HTTP-method", req));
 
+    urls::url_view params = urls::parse_origin_form(req.target()).value();
+    beast::string_view target = params.path();
+
     // Request path must be absolute and not contain "..".
-    if( req.target().empty() ||
-        req.target()[0] != '/' ||
-        req.target().find("..") != beast::string_view::npos)
+    if( target.empty() ||
+        target[0] != '/' ||
+        target.find("..") != beast::string_view::npos)
         return send_(bad_request("Illegal request-target", req));
+    
+    vector<beast::string_view> allowed{"/auth", "/authCheck", "/register"};
 
-    // // Build the path to the requested file
-    // std::string path = path_cat(doc_root, req.target());
-    // if(req.target().back() == '/')
-    //     path.append("index.html");
-
-    // // Attempt to open the file
-    // beast::error_code ec;
-    // http::file_body::value_type body;
-    // body.open(path.c_str(), beast::file_mode::scan, ec);
-
-    // // Handle the case where the file doesn't exist
-    // if(ec == beast::errc::no_such_file_or_directory)
-    //     return send_(not_found(req.target(), req));
-
-    // // Handle an unknown error
-    // if(ec)
-    //     return send_(server_error(ec.message(), req));
-
-    // // Cache the size since we need it after the move
-    // auto const size = body.size();
+    auto it = req.find("Cookie");
+    if (it == req.end() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
+    {
+        return send_(unauthorized("Unauthorized", req));
+    }
+    UserSession session = it == req.end() ? UserSession() : context.getSessionManager().getSession(it->value());
+    if (session.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
+        return send_(unauthorized("Unauthorized", req));
 
     // Respond to GET request
     try
     {
-        router.route(req.target(), req, send_);
+        router.route(req, params, session, send_);
     }
     catch (std::invalid_argument &ex)
     {
         std::cerr << ex.what() << std::endl;
-        return send_(not_found(req.target(), req));
+        return send_(not_found(target, req));
     }
     catch (SAException &ex)
     {
         std::cerr << saStrToStr(ex.ErrMessage()) << std::endl;
-        return send_(not_found(req.target(), req));
+        return send_(bad_request(target, req));
+    }
+    catch (...)
+    {
+        return send_(server_error(target, req));
     }
 }

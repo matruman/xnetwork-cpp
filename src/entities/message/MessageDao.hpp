@@ -17,12 +17,14 @@ public:
     ~MessageDao();
 
     Integer save(const Message &message);
-    vector<Message> getFeedPosts(Integer &&userID);
-    vector<Message> getUserPosts(Integer &&userID);
-    vector<Message> getChatMessages(Integer &&mainUserID, Integer &&converserID, int offset);
+    vector<Message> getFeedPosts(int userID, int offset);
+    vector<Message> getUserPosts(int userID, int offset);
+    vector<Message> getChatMessages(int mainUserID, 
+        int converserID, int offset);
+    vector<Message> getNewMessages(int mainUserID, 
+        int converserID, int lastMessageID);
 
     Message    mapRequestResult(SACommand &command);
-
 };
 
 #endif

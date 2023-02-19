@@ -3,7 +3,10 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/include", "${workspaceFolder}/src", "C:/boost/include/boost-1_81", "C:/SQLAPI/mingw-w64/include"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/src",
+                "C:/boost/include/boost-1_81",
+                "C:/SQLAPI/mingw-w64/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -13,7 +16,8 @@
             "compilerPath": "C:/mingw64/bin/g++.exe",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "windows-gcc-x64"
+            "intelliSenseMode": "windows-gcc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4

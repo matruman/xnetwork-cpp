@@ -8,14 +8,13 @@ MessageDao::~MessageDao()
 {
 }
 
-Integer MessageDao::save(const Message &message)
+Integer     MessageDao::save(const Message &message)
 {
     SACommand command(&dbConnection,
-        _TSA("INSERT INTO messages (sender_id, receiver_id, sender_name, text) VALUES (:1, :2, :3, :4); \
+        _TSA("INSERT INTO messages (sender_id, receiver_id, text) VALUES (:1, :2, :3); \
                 SELECT LAST_INSERT_ID()"));
     command << (long) message.getSenderID().get();
     command << (long) message.getReceiverID().get();
-    command << SAString(message.getSenderName().get().c_str());
     command << SAString(message.getText().get().c_str());
     command.Execute();
     if (command.FetchNext())
@@ -25,29 +24,32 @@ Integer MessageDao::save(const Message &message)
 }
 
 
-vector<Message> getFeedPosts(Integer &&userID);
+vector<Message>     getFeedPosts(const Integer &userID, int offset);
 
-vector<Message> MessageDao::getUserPosts(Integer &&userID)
+vector<Message>     MessageDao::getUserPosts(int userID, int offset)
 {
     vector<Message> vect;
     SACommand command(&dbConnection, 
-    _TSA("SELECT message_id, sender_id, receiver_id, sender_name, text, date \
-        FROM messages WHERE sender_id=:1 AND receiver_id=0"));
+    _TSA("SELECT message_id, sender_id, receiver_id, u.username, text, date FROM messages m \
+        INNER JOIN users u ON m.sender_id = u.user_id \
+        WHERE sender_id=:1 AND receiver_id=0 ORDER BY message_id DESC LIMIT 50 OFFSET :2"));
     command << (long) userID;
+    command << (long) offset;
     command.Execute();
     while (command.FetchNext())
         vect.emplace_back(mapRequestResult(command));
     return vect;
 }
 
-vector<Message> MessageDao::getChatMessages(Integer &&mainUserID, Integer &&converserID, int offset)
+vector<Message>     MessageDao::getChatMessages(int mainUserID, 
+        int converserID, int offset)
 {
     vector<Message> vect;
     SACommand command(&dbConnection, 
-    _TSA("SELECT message_id, sender_id, receiver_id, sender_name, text, date \
-        FROM messages WHERE \
-        (sender_id=:1 AND receiver_id=:2) OR (sender_id=:2 AND receiver_id=:1) \
-        LIMIT 50 OFFSET :3"));
+    _TSA("SELECT message_id, sender_id, receiver_id, u.username, text, date FROM messages m \
+        INNER JOIN users u ON m.sender_id = u.user_id \
+        WHERE (sender_id=:1 AND receiver_id=:2) OR (sender_id=:2 AND receiver_id=:1) \
+        ORDER BY message_id DESC LIMIT 50 OFFSET :3"));
     command << (long) mainUserID;
     command << (long) converserID;
     command << (long) offset;
@@ -57,7 +59,25 @@ vector<Message> MessageDao::getChatMessages(Integer &&mainUserID, Integer &&conv
     return vect;
 }
 
-Message    MessageDao::mapRequestResult(SACommand &command)
+vector<Message>     MessageDao::getNewMessages(int mainUserID, 
+        int converserID, int lastMessageID)
+{
+    vector<Message> vect;
+    SACommand command(&dbConnection, 
+    _TSA("SELECT message_id, sender_id, receiver_id, u.username, text, date FROM messages m \
+        INNER JOIN users u ON m.sender_id = u.user_id \
+        WHERE ((sender_id=:1 AND receiver_id=:2) OR (sender_id=:2 AND receiver_id=:1)) \
+        AND message_id > :3 ORDER BY message_id DESC LIMIT 50"));
+    command << (long) mainUserID;
+    command << (long) converserID;
+    command << (long) lastMessageID;
+    command.Execute();
+    while (command.FetchNext())
+        vect.emplace_back(mapRequestResult(command));
+    return vect;
+}
+
+Message     MessageDao::mapRequestResult(SACommand &command)
 {
     return Message(
         getIntegerFromSaField(command[1]),

@@ -2,6 +2,9 @@
 #define USER_HPP
 
 #include <datatypes/datatypes.hpp>
+#include <boost/json.hpp>
+
+namespace json = boost::json;
 
 class User
 {
@@ -28,6 +31,7 @@ public:
     const Long& getLastLoginTime() const;
     bool isNull() const;
 
+    json::object        getJsonObject() const;
 };
 
 #endif

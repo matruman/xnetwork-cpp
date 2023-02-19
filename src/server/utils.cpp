@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <boost/url/src.hpp>
 
 // Report a failure
 void    fail(beast::error_code ec, char const* what)
@@ -39,4 +40,74 @@ beast::string_view  mime_type(beast::string_view path)
     if(iequals(ext, ".svg"))  return "image/svg+xml";
     if(iequals(ext, ".svgz")) return "image/svg+xml";
     return "application/text";
+}
+
+void    set_cors(http::response<http::string_body>& res)
+{
+    res.set(http::field::access_control_allow_origin, "http://192.168.1.64:3000");
+    res.set(http::field::access_control_allow_credentials, "true");
+}
+
+// Returns a bad request response
+http::response<http::string_body>   bad_request(beast::string_view why, 
+    http::request<http::string_body> req)
+{
+    http::response<http::string_body> res{http::status::bad_request, req.version()};
+    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+    res.set(http::field::content_type, "text/html");
+    res.keep_alive(req.keep_alive());
+    res.body() = std::string(why);
+    res.prepare_payload();
+    return res;
+}
+
+// Returns a not found response
+http::response<http::string_body>   not_found(beast::string_view target, 
+    http::request<http::string_body> req)
+{
+    http::response<http::string_body> res{http::status::not_found, req.version()};
+    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+    res.set(http::field::content_type, "text/html");
+    res.keep_alive(req.keep_alive());
+    res.body() = "The resource '" + std::string(target) + "' was not found.";
+    res.prepare_payload();
+    return res;
+}
+
+// Returns an unauthorized response
+http::response<http::string_body>   unauthorized(beast::string_view what, 
+        http::request<http::string_body> req)
+{
+    http::response<http::string_body> res{http::status::unauthorized, req.version()};
+    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+    res.set(http::field::content_type, "text/html");
+    res.keep_alive(req.keep_alive());
+    res.body() = "An error occurred: '" + std::string(what) + "'";
+    res.prepare_payload();
+    return res;
+}
+
+// Returns a server error response
+http::response<http::string_body>   server_error(beast::string_view what, 
+    http::request<http::string_body> req)
+{
+    http::response<http::string_body> res{http::status::internal_server_error, req.version()};
+    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+    res.set(http::field::content_type, "text/html");
+    res.keep_alive(req.keep_alive());
+    res.body() = "An error occurred: '" + std::string(what) + "'";
+    res.prepare_payload();
+    return res;
+}
+
+int     getIntFromUrlView(urls::url_view& params, std::string name)
+{
+    auto it = params.params().find(name);
+    return std::stoi((*it).value);
+}
+
+std::string     getStringFromUrlView(urls::url_view& params, std::string name)
+{
+     auto it = params.params().find(name);
+    return (*it).value;
 }

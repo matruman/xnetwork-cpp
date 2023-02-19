@@ -1,14 +1,18 @@
 #ifndef ABSTRACT_ROUTE_HPP
 #define ABSTRACT_ROUTE_HPP
 
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
+#include <server/utils.hpp>
+#include <boost/json.hpp>
 #include <iostream>
-#include <server/Session.hpp>
+#include <vector>
+#include <server/send_lambda.hpp>
 #include <server/ApplicationContext.hpp>
+#include <server/UserSession.hpp>
 
-namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace http = beast::http;           // from <boost/beast/http.hpp>
+namespace json = boost::json;
+
+using std::string;
+using std::vector;
 
 class AbstractRoute
 {
@@ -19,8 +23,8 @@ public:
 
     ApplicationContext& getContext() const;
     virtual ~AbstractRoute() = default;
-    virtual void resolve(http::request<http::string_body>& req,
-        session::send_lambda& send_) = 0;
+    virtual void resolve(http::request<http::string_body>& req, urls::url_view& params,
+        UserSession& session, send_lambda& send_) = 0;
 };
 
 #endif

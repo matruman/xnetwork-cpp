@@ -17,3 +17,17 @@ const String& User::getPassword() const { return password; }
 const Long& User::getRegDate() const { return regDate; }
 const Long& User::getLastLoginTime() const { return lastLoginTime; }
 bool User::isNull() const { return isNullFlag; }
+
+json::object    User::getJsonObject() const
+{
+    json::object obj;
+    obj.emplace("user_id", getUserID().get());
+    obj.emplace("email", getEmail().get());
+    obj.emplace("username", getUsername().get());
+    obj.emplace("reg_date", getRegDate().get());
+    if (getLastLoginTime().isNull())
+        obj.emplace("last_login", nullptr);
+    else
+        obj.emplace("last_login", getLastLoginTime().get());
+    return obj;
+}

@@ -1,13 +1,13 @@
-#ifndef UPLOAD_POST_HPP
-#define UPLOAD_POST_HPP
+#ifndef AUTH_CHECK_HPP
+#define AUTH_CHECK_HPP
 
 #include "AbstractRoute.hpp"
 
-class UploadPost : public AbstractRoute
+class AuthCheck : public AbstractRoute
 {
 public:
-    UploadPost(ApplicationContext &context);
-    ~UploadPost();
+    AuthCheck(ApplicationContext &context);
+    ~AuthCheck();
 
     void resolve(http::request<http::string_body>& req, urls::url_view& params,
                         UserSession& session, send_lambda& send_) override ;

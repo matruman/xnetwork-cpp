@@ -10,8 +10,8 @@ UploadPost::~UploadPost()
 {
 }
 
-void    UploadPost::resolve(http::request<http::string_body>& req,
-                                    session::send_lambda& send_)
+void    UploadPost::resolve(http::request<http::string_body>& req, urls::url_view& params,
+                        UserSession& session, send_lambda& send_)
 {
     UserDao &userDao = getContext().getUserDao();
     MessageDao &messageDao = getContext().getMessageDao();
@@ -20,15 +20,14 @@ void    UploadPost::resolve(http::request<http::string_body>& req,
     json::value js = json::parse(body);
     json::string text = js.as_object().at("text").as_string();
 
-    User user = userDao.getById(1);
-    Message post(0, 1, 0, String(user.getUsername()), String(text.c_str()), 0);
+    User user = userDao.getById(session.getUserID());
+    Message post(0, Integer(session.getUserID()), 0, String(user.getUsername()), String(text.c_str()), 0);
     messageDao.save(post);
 
     http::response<http::string_body> res{http::status::ok, req.version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
     res.set(http::field::content_type, "application/json");
-    res.set(http::field::access_control_allow_origin, "http://localhost:3000");
-    res.set(http::field::access_control_allow_credentials, "true");
+    set_cors(res);
     res.keep_alive(req.keep_alive());
     res.body() = "{ \"status\" : \"ok\" }";
     res.prepare_payload();

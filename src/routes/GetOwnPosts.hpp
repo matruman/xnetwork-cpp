@@ -5,14 +5,12 @@
 
 class GetOwnPosts : public AbstractRoute
 {
-private:
-    /* data */
 public:
     GetOwnPosts(ApplicationContext &context);
     ~GetOwnPosts();
 
-    void resolve(http::request<http::string_body>& req,
-                            session::send_lambda& send_) override ;
+    void resolve(http::request<http::string_body>& req, urls::url_view& params,
+                        UserSession& session, send_lambda& send_) override ;
 };
 
 #endif

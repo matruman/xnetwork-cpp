@@ -4,9 +4,9 @@ project(xnetwork)
 
 set(EXECUTABLE_NAME server)
 
-SET(CMAKE_CXX_FLAGS "-std=c++11 -g -Og")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -O2")
 
-find_package(Boost REQUIRED COMPONENTS json)
+find_package(Boost REQUIRED COMPONENTS json URL)
 include_directories(
 	${Boost_INCLUDE_DIRS}
 	"C:/SQLAPI/mingw-w64/include"
@@ -37,13 +37,29 @@ add_executable(${EXECUTABLE_NAME}
 	src/entities/user/User.hpp
 	src/entities/user/UserDao.cpp
 	src/entities/user/UserDao.hpp
+	src/entities/user/UserListElem.cpp
+	src/entities/user/UserListElem.hpp
 	
 	src/routes/AbstractRoute.cpp
 	src/routes/AbstractRoute.hpp
-	src/routes/DefaultRoute.cpp
-	src/routes/DefaultRoute.hpp
+	src/routes/AuthCheck.cpp
+	src/routes/AuthCheck.hpp
+	src/routes/AuthRoute.cpp
+	src/routes/AuthRoute.hpp
+	src/routes/GetChatList.cpp
+	src/routes/GetChatList.hpp
+	src/routes/GetChatMessages.cpp
+	src/routes/GetChatMessages.hpp
+	src/routes/GetNewMessages.cpp
+	src/routes/GetNewMessages.hpp
 	src/routes/GetOwnPosts.cpp
 	src/routes/GetOwnPosts.hpp
+	src/routes/GetUserList.cpp
+	src/routes/GetUserList.hpp
+	src/routes/RegistrationRoute.cpp
+	src/routes/RegistrationRoute.hpp
+	src/routes/SendMessageRoute.cpp
+	src/routes/SendMessageRoute.hpp
 	src/routes/UploadPost.cpp
 	src/routes/UploadPost.hpp
 	
@@ -57,6 +73,12 @@ add_executable(${EXECUTABLE_NAME}
 	src/server/Router.hpp
 	src/server/Session.cpp
 	src/server/Session.hpp
+	src/server/send_lambda.cpp
+	src/server/send_lambda.hpp
+	src/server/SessionManager.cpp
+	src/server/SessionManager.hpp
+	src/server/UserSession.cpp
+	src/server/UserSession.hpp
 	src/server/utils.cpp
 	src/server/utils.hpp
 
