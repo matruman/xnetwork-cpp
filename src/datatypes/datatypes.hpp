@@ -40,6 +40,8 @@ class   Integer
 
     int get() const;
     operator int() const;
+    Integer& operator=(const Integer &other);
+
     bool isNull() const;
     bool operator==(const Integer &other) const;
     bool operator!=(const Integer &other) const;

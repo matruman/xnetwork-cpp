@@ -4,7 +4,7 @@ project(xnetwork)
 
 set(EXECUTABLE_NAME server)
 
-SET(CMAKE_CXX_FLAGS "-std=c++11 -O2")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O2")
 
 find_package(Boost REQUIRED COMPONENTS json URL)
 include_directories(
@@ -65,6 +65,10 @@ add_executable(${EXECUTABLE_NAME}
 	
 	src/server/ApplicationContext.cpp
 	src/server/ApplicationContext.hpp
+	src/server/HttpRequest.cpp
+	src/server/HttpRequest.hpp
+	src/server/HttpResponse.cpp
+	src/server/HttpResponse.hpp
 	src/server/Listener.cpp
 	src/server/Listener.hpp
 	src/server/RequestHandler.cpp
@@ -93,6 +97,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	target_link_libraries(${EXECUTABLE_NAME} 
+		asan
 		Boost::boost
 		Boost::json
 		wsock32

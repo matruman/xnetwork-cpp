@@ -9,7 +9,7 @@ AuthRoute::~AuthRoute()
 {
 }
 
-void    AuthRoute::resolve(http::request<http::string_body>& req, urls::url_view& params,
+void    AuthRoute::resolve(HttpRequest& req, urls::url_view& params,
                         UserSession& session, send_lambda& send_)
 {
     string &body = req.body();
@@ -34,13 +34,7 @@ void    AuthRoute::resolve(http::request<http::string_body>& req, urls::url_view
     payload.emplace("status", true);
     payload.emplace("user", user.getJsonObject());
 
-    http::response<http::string_body> res{http::status::ok, req.version()};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::set_cookie, sessionString);
-    res.set(http::field::content_type, "application/json");
-    set_cors(res);
-    res.keep_alive(req.keep_alive());
-    res.body() = json::serialize(payload);
-    res.prepare_payload();
+    HttpResponse res = success_response(payload, req);
+    res.set("Set-Cookie", sessionString);
     send_(std::move(res));
 }

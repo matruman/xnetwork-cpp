@@ -1,6 +1,7 @@
 #ifndef SESSION_HPP
 #define SESSION_HPP
 
+#include "HttpRequest.hpp"
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
@@ -25,14 +26,16 @@ private:
     beast::tcp_stream stream_;
     beast::flat_buffer buffer_;
     std::shared_ptr<std::string const> doc_root_;
-    http::request<http::string_body> req_;
-    std::shared_ptr<void> res_;
+    HttpRequest req_;
+    HttpResponse res_;
     send_lambda lambda_;
 
 public:
     // Take ownership of the stream
     session(RequestHandler &handler, tcp::socket&& socket, 
         std::shared_ptr<std::string const> const& doc_root);
+
+    static void    fail(beast::error_code ec, char const* what);
 
     void    run();
     void    do_read();
@@ -41,7 +44,7 @@ public:
     void    do_close();
 
     beast::tcp_stream&      getStream() { return stream_; }
-    std::shared_ptr<void>&  getRes() { return res_; }    
+    HttpResponse&  getRes() { return res_; }    
 };
 
 #endif

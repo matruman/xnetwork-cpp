@@ -1,10 +1,7 @@
 #ifndef SEND_LAMBDA_HPP
 #define SEND_LAMBDA_HPP
 
-#include <boost/beast/http.hpp>
-
-namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace http = beast::http;           // from <boost/beast/http.hpp>
+#include "HttpResponse.hpp"
 
 class session;
 
@@ -17,7 +14,7 @@ struct send_lambda
     explicit send_lambda(session& self) : self_(self)
     {}
 
-    void operator()(http::response<http::string_body>&& resp) const;
+    void operator()(HttpResponse&& resp) const;
 };
 
 #endif

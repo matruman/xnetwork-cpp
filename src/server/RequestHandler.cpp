@@ -1,5 +1,5 @@
 #include "RequestHandler.hpp"
-#include "Session.hpp"
+// #include "Session.hpp"
 #include "send_lambda.hpp"
 #include <boost/url.hpp>
 #include <string>
@@ -7,6 +7,7 @@
 #include <algorithm>
 
 namespace urls = boost::urls;
+urls::url_view *tmppar;
 
 using std::string;
 using std::vector;
@@ -17,7 +18,7 @@ RequestHandler::RequestHandler(ApplicationContext &context_) : context(context_)
 
 // Append an HTTP rel-path to a local filesystem path.
 // The returned path is normalized for the platform.
-std::string     RequestHandler::path_cat(beast::string_view base, beast::string_view path)
+std::string     RequestHandler::path_cat(string base, string path)
 {
     if(base.empty())
         return std::string(path);
@@ -44,37 +45,46 @@ std::string     RequestHandler::path_cat(beast::string_view base, beast::string_
 // contents of the request, so the interface requires the
 // caller to pass a generic lambda for receiving the response.
 void RequestHandler::handle_request(const std::string doc_root, 
-    http::request<http::string_body>& req, send_lambda& send_)
+    HttpRequest& req, send_lambda& send_)
 {
     std::cout << "Request handling started\n"; 
     // Make sure we can handle the method
-    if( req.method() != http::verb::get && req.method() != http::verb::post)
+    if( req.method() != "GET" && req.method() != "POST")
         return send_(bad_request("Unknown HTTP-method", req));
 
-    urls::url_view params = urls::parse_origin_form(req.target()).value();
-    beast::string_view target = params.path();
+    urls::url_view request_params = urls::parse_origin_form(req.target()).value();
+    string target = request_params.path();
+    tmppar = &request_params;
+
+    std::cout << "Target: " << req.target() << " " << request_params.path() << std::endl;
 
     // Request path must be absolute and not contain "..".
     if( target.empty() ||
         target[0] != '/' ||
-        target.find("..") != beast::string_view::npos)
+        target.find("..") != string::npos)
         return send_(bad_request("Illegal request-target", req));
     
-    vector<beast::string_view> allowed{"/auth", "/authCheck", "/register"};
+    vector<string> allowed{"/auth", "/authCheck", "/register"};
 
-    auto it = req.find("Cookie");
-    if (it == req.end() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
+    if (!req.findHeader("Cookie") && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
     {
         return send_(unauthorized("Unauthorized", req));
     }
-    UserSession session = it == req.end() ? UserSession() : context.getSessionManager().getSession(it->value());
-    if (session.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
+    UserSession session123 = req.findHeader("Cookie") ? context.getSessionManager().getSession(req.getHeader("Cookie")) : UserSession();
+    if (session123.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
         return send_(unauthorized("Unauthorized", req));
+
+        // std::cout << "Target: " << req.target() << " " << params.path() << std::endl;
+
+    // UserSession session;
+    // UserSession session;
+    // if (req.findHeader("Cookie")) 
+    //     session = context.getSessionManager().getSession(req.getHeader("Cookie"));
 
     // Respond to GET request
     try
     {
-        router.route(req, params, session, send_);
+        router.route(req, request_params, session123, send_);
     }
     catch (std::invalid_argument &ex)
     {

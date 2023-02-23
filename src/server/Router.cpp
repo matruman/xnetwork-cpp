@@ -24,9 +24,10 @@ Router::Router(ApplicationContext &context) : context(context)
     routes.emplace("/register", makeRoute(new RegistrationRoute(context)));
 }
 
-void    Router::route(http::request<http::string_body>& req, urls::url_view& params,
+void    Router::route(HttpRequest& req, urls::url_view& params,
                         UserSession& session, send_lambda& send_)
 {
+    std::cout << "path: " << params.path() << "$" << std::endl;
     auto it = routes.find(params.path());
     if (it == routes.end())
         throw std::invalid_argument("No route for requested path");

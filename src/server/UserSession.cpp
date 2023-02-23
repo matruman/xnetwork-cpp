@@ -10,5 +10,12 @@ UserSession::~UserSession()
 {
 }
 
+UserSession&    UserSession::operator=(const UserSession &other)
+{
+    userID = other.userID;
+    isNullFlag = other.isNullFlag;
+    return *this;
+}
+
 bool    UserSession::isNull() const { return isNullFlag; }
 const   Integer& UserSession::getUserID() const { return userID; }

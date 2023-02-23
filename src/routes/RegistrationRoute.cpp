@@ -10,7 +10,7 @@ RegistrationRoute::~RegistrationRoute()
 {
 }
 
-void    RegistrationRoute::resolve(http::request<http::string_body>& req, urls::url_view& params,
+void    RegistrationRoute::resolve(HttpRequest& req, urls::url_view& params,
                                     UserSession& session, send_lambda& send_)
 {
     string &body = req.body();
@@ -23,15 +23,10 @@ void    RegistrationRoute::resolve(http::request<http::string_body>& req, urls::
     string passwordHash = std::to_string(std::hash<string>{}(password.c_str()));
 
     User user(0, string(email.c_str()), string(username.c_str()), passwordHash, 0, 0);
-
     getContext().getUserDao().save(user);
 
-    http::response<http::string_body> res{http::status::ok, req.version()};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, "application/json");
-    set_cors(res);
-    res.keep_alive(req.keep_alive());
-    res.body() = "{ \"status\" : true }";
-    res.prepare_payload();
-    send_(std::move(res));
+    json::object payload;
+    payload.emplace("status", true);
+
+    send_(success_response(payload, req));
 }

@@ -22,7 +22,15 @@ Integer::Integer(const Integer &i) : val{i.val}, isNullFlag{i.isNullFlag} {}
 Integer::Integer(Integer &&i) : val{i.val}, isNullFlag{i.isNullFlag} {}
 
 int Integer::get() const {return val; }
+Integer& Integer::operator=(const Integer &other)
+{
+    val = other.val;
+    isNullFlag = other.isNullFlag;
+    return *this;
+}
 Integer::operator int() const { return val; }
+
+
 bool Integer::isNull() const { return isNullFlag; }
 bool Integer::operator==(const Integer &other) const { return val == other.val; }
 bool Integer::operator!=(const Integer &other) const { return !(*this == other); }

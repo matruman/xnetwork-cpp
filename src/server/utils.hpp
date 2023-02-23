@@ -1,42 +1,41 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <boost/beast/http.hpp>
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
+#include <winsock2.h>
 #include <boost/beast/version.hpp>
 #include <boost/url/url_view.hpp>
+#include <boost/json.hpp>
 #include <iostream>
 #include <SQLAPI.h>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace urls = boost::urls;           // from <boost/url.hpp>
+namespace json = boost::json;
 
 using std::string;
 
-// Report a failure
-void    fail(beast::error_code ec, char const* what);
-
-// Return a reasonable mime type based on the extension of a file.
-beast::string_view  mime_type(beast::string_view path);
+// // Return a reasonable mime type based on the extension of a file.
+// beast::string_view  mime_type(beast::string_view path);
 
 // Set CORS headers to request.
-void    set_cors(http::response<http::string_body>& res);
+void            set_cors(HttpResponse &res);
+
+// Returns a success response
+HttpResponse    success_response(json::object &payload, HttpRequest &req);
 
 // Returns a bad request response
-http::response<http::string_body>   bad_request(beast::string_view why, 
-    http::request<http::string_body> req);
+HttpResponse    bad_request(string why, HttpRequest &req);
 
 // Returns a not found response
-http::response<http::string_body>   not_found(beast::string_view target, 
-    http::request<http::string_body> req);
+HttpResponse    not_found(string target, HttpRequest &req);
 
 // Returns an unauthorized response
-http::response<http::string_body>   unauthorized(beast::string_view what, 
-    http::request<http::string_body> req);
+HttpResponse    unauthorized(string what, HttpRequest &req);
 
 // Returns a server error response
-http::response<http::string_body>   server_error(beast::string_view what, 
-    http::request<http::string_body> req);
+HttpResponse    server_error(string what, HttpRequest &req);
 
 int             getIntFromUrlView(urls::url_view& params, std::string name);
 std::string     getStringFromUrlView(urls::url_view& params, std::string name);

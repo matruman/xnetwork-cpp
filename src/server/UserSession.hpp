@@ -13,6 +13,8 @@ public:
     UserSession(const Integer& userID);
     ~UserSession();
 
+    UserSession& operator=(const UserSession &other);
+
     bool    isNull() const;
     const   Integer& getUserID() const;
 };
