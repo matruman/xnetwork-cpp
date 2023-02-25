@@ -9,7 +9,7 @@ AuthRoute::~AuthRoute()
 {
 }
 
-void    AuthRoute::resolve(HttpRequest& req, urls::url_view& params,
+void    AuthRoute::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
     string &body = req.body();

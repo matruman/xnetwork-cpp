@@ -10,7 +10,7 @@ UploadPost::~UploadPost()
 {
 }
 
-void    UploadPost::resolve(HttpRequest& req, urls::url_view& params,
+void    UploadPost::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
     UserDao &userDao = getContext().getUserDao();

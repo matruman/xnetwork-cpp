@@ -8,12 +8,12 @@ GetChatMessages::~GetChatMessages()
 {
 }
 
-void    GetChatMessages::resolve(HttpRequest& req, urls::url_view& params,
+void    GetChatMessages::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
     MessageDao &dao = getContext().getMessageDao();
-    int converser_id = getIntFromUrlView(params, "converser_id");
-    int offset = getIntFromUrlView(params, "offset");
+    int converser_id = std::stoi(params.getParam("converser_id"));
+    int offset = std::stoi(params.getParam("offset"));
     
     vector<Message> messages = dao.getChatMessages(session.getUserID().get(), converser_id, offset);
     json::array jsonMessages;

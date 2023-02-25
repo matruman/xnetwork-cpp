@@ -8,11 +8,11 @@ GetNewMessages::~GetNewMessages()
 {
 }
 
-void    GetNewMessages::resolve(HttpRequest& req, urls::url_view& params,
+void    GetNewMessages::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
-    int converser_id = getIntFromUrlView(params, "converser_id");
-    int last_message_id = getIntFromUrlView(params, "last_message_id");
+    int converser_id = std::stoi(params.getParam("converser_id"));
+    int last_message_id = std::stoi(params.getParam("last_message_id"));
     vector<Message> messages = getContext().getMessageDao().getNewMessages(session.getUserID().get(),
         converser_id, last_message_id);
     json::array messagesJson;

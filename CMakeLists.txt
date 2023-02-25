@@ -20,6 +20,8 @@ add_executable(${EXECUTABLE_NAME}
 
 	src/datatypes/datatypes.cpp
 	src/datatypes/datatypes.hpp
+	src/datatypes/URLParams.cpp
+	src/datatypes/URLParams.hpp
 	
 	src/entities/chat/Chat.cpp
 	src/entities/chat/Chat.hpp
@@ -97,7 +99,6 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	target_link_libraries(${EXECUTABLE_NAME} 
-		asan
 		Boost::boost
 		Boost::json
 		wsock32

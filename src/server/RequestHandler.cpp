@@ -1,13 +1,10 @@
 #include "RequestHandler.hpp"
 // #include "Session.hpp"
 #include "send_lambda.hpp"
-#include <boost/url.hpp>
+#include <datatypes/URLParams.hpp>
 #include <string>
 #include <vector>
 #include <algorithm>
-
-namespace urls = boost::urls;
-urls::url_view *tmppar;
 
 using std::string;
 using std::vector;
@@ -52,9 +49,8 @@ void RequestHandler::handle_request(const std::string doc_root,
     if( req.method() != "GET" && req.method() != "POST")
         return send_(bad_request("Unknown HTTP-method", req));
 
-    urls::url_view request_params = urls::parse_origin_form(req.target()).value();
+    URLParams request_params(req.target());
     string target = request_params.path();
-    tmppar = &request_params;
 
     std::cout << "Target: " << req.target() << " " << request_params.path() << std::endl;
 
@@ -70,21 +66,14 @@ void RequestHandler::handle_request(const std::string doc_root,
     {
         return send_(unauthorized("Unauthorized", req));
     }
-    UserSession session123 = req.findHeader("Cookie") ? context.getSessionManager().getSession(req.getHeader("Cookie")) : UserSession();
-    if (session123.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
+    UserSession session = req.findHeader("Cookie") ? context.getSessionManager().getSession(req.getHeader("Cookie")) : UserSession();
+    if (session.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
         return send_(unauthorized("Unauthorized", req));
-
-        // std::cout << "Target: " << req.target() << " " << params.path() << std::endl;
-
-    // UserSession session;
-    // UserSession session;
-    // if (req.findHeader("Cookie")) 
-    //     session = context.getSessionManager().getSession(req.getHeader("Cookie"));
 
     // Respond to GET request
     try
     {
-        router.route(req, request_params, session123, send_);
+        router.route(req, request_params, session, send_);
     }
     catch (std::invalid_argument &ex)
     {
@@ -95,6 +84,11 @@ void RequestHandler::handle_request(const std::string doc_root,
     {
         std::cerr << saStrToStr(ex.ErrMessage()) << std::endl;
         return send_(bad_request(target, req));
+    }
+    catch (std::exception &ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return send_(server_error(target, req));
     }
     catch (...)
     {

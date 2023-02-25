@@ -8,10 +8,10 @@ GetChatList::~GetChatList()
 {
 }
 
-void    GetChatList::resolve(HttpRequest& req, urls::url_view& params,
+void    GetChatList::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
-    int offset = getIntFromUrlView(params, "offset");
+    int offset = std::stoi(params.getParam("offset"));
     vector<Chat> chats = getContext().getChatDao().getChats(session.getUserID().get(), offset);
     json::array chatsJson;
     for (auto &chat : chats)

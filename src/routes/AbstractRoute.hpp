@@ -1,6 +1,7 @@
 #ifndef ABSTRACT_ROUTE_HPP
 #define ABSTRACT_ROUTE_HPP
 
+#include <datatypes/URLParams.hpp>
 #include <server/utils.hpp>
 #include <iostream>
 #include <vector>
@@ -20,7 +21,7 @@ public:
 
     ApplicationContext& getContext() const;
     virtual ~AbstractRoute() = default;
-    virtual void resolve(HttpRequest& req, urls::url_view& params,
+    virtual void resolve(HttpRequest& req, URLParams& params,
         UserSession& session, send_lambda& send_) = 0;
 };
 

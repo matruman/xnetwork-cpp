@@ -30,7 +30,7 @@ void    session::do_read()
 {
     // Make the request empty before reading,
     // otherwise the operation behavior is undefined.
-    // req_.clear();
+    req_.clear();
 
     // Set the timeout.
     stream_.expires_after(std::chrono::seconds(30));

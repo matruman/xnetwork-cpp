@@ -9,11 +9,12 @@ GetOwnPosts::~GetOwnPosts()
 {
 }
 
-void    GetOwnPosts::resolve(HttpRequest& req, urls::url_view& params,
+void    GetOwnPosts::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
     MessageDao &dao = getContext().getMessageDao();
-    int offset = getIntFromUrlView(params, "offset");
+    string tmp = params.getParam("offset");
+    int offset = std::stoi(tmp);
     
     vector<Message> posts = dao.getUserPosts(session.getUserID().get(), offset);
     json::array postsJson;

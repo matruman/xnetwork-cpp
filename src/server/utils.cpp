@@ -1,9 +1,4 @@
 #include "utils.hpp"
-#include <boost/url/src.hpp>
-#include <boost/beast/http.hpp>
-
-namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace http = beast::http;           // from <boost/beast/http.hpp>
 
 // // Return a reasonable mime type based on the extension of a file.
 // beast::string_view  mime_type(beast::string_view path)
@@ -108,14 +103,14 @@ HttpResponse   server_error(string what, HttpRequest &req)
     return res;
 }
 
-int     getIntFromUrlView(urls::url_view &params, std::string name)
-{
-    auto it = params.params().find(name);
-    return std::stoi((*it).value);
-}
+// int     getIntFromUrlView(urls::url_view &params, std::string name)
+// {
+//     auto it = params.params().find(name);
+//     return std::stoi((*it).value);
+// }
 
-std::string     getStringFromUrlView(urls::url_view &params, std::string name)
-{
-     auto it = params.params().find(name);
-    return (*it).value;
-}
+// std::string     getStringFromUrlView(urls::url_view &params, std::string name)
+// {
+//      auto it = params.params().find(name);
+//     return (*it).value;
+// }

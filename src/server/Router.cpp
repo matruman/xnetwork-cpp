@@ -24,7 +24,7 @@ Router::Router(ApplicationContext &context) : context(context)
     routes.emplace("/register", makeRoute(new RegistrationRoute(context)));
 }
 
-void    Router::route(HttpRequest& req, urls::url_view& params,
+void    Router::route(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
     std::cout << "path: " << params.path() << "$" << std::endl;

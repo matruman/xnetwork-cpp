@@ -8,7 +8,7 @@ AuthCheck::~AuthCheck()
 {
 }
 
-void    AuthCheck::resolve(HttpRequest& req, urls::url_view& params,
+void    AuthCheck::resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
     json::object payload;

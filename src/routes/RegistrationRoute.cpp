@@ -10,7 +10,7 @@ RegistrationRoute::~RegistrationRoute()
 {
 }
 
-void    RegistrationRoute::resolve(HttpRequest& req, urls::url_view& params,
+void    RegistrationRoute::resolve(HttpRequest& req, URLParams& params,
                                     UserSession& session, send_lambda& send_)
 {
     string &body = req.body();

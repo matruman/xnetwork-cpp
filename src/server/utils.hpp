@@ -5,13 +5,11 @@
 #include "HttpResponse.hpp"
 #include <winsock2.h>
 #include <boost/beast/version.hpp>
-#include <boost/url/url_view.hpp>
 #include <boost/json.hpp>
 #include <iostream>
 #include <SQLAPI.h>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace urls = boost::urls;           // from <boost/url.hpp>
 namespace json = boost::json;
 
 using std::string;
@@ -37,8 +35,8 @@ HttpResponse    unauthorized(string what, HttpRequest &req);
 // Returns a server error response
 HttpResponse    server_error(string what, HttpRequest &req);
 
-int             getIntFromUrlView(urls::url_view& params, std::string name);
-std::string     getStringFromUrlView(urls::url_view& params, std::string name);
+// int             getIntFromUrlView(urls::url_view& params, std::string name);
+// std::string     getStringFromUrlView(urls::url_view& params, std::string name);
 
 
 #endif

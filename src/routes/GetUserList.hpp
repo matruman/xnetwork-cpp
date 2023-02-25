@@ -9,7 +9,7 @@ public:
     GetUserList(ApplicationContext &context);
     ~GetUserList();
 
-    void resolve(HttpRequest& req, urls::url_view& params,
+    void resolve(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_) override ;
 };
 
