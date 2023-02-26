@@ -19,7 +19,9 @@ class basic_fields;
 } // namespace beast
 } // namespace boost
 
-
+// A proxy class for type boost::beast::http::request 
+// It is made not to connect its header in other files
+// and reduce compilation time and executable size
 class HttpRequest
 {
 private:

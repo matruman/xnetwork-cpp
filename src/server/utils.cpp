@@ -41,6 +41,7 @@ void    set_cors(HttpResponse &res)
     res.set("Access-Control-Allow-Credentials", "true");
 }
 
+// Returns a success response
 HttpResponse    success_response(json::object &payload, HttpRequest &req)
 {
     HttpResponse res(HttpResponse::ok, req.version());
