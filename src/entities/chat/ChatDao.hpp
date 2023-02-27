@@ -3,6 +3,7 @@
 
 #include "Chat.hpp"
 #include <SQLAPI.h>
+#include <application/DBConnectionManager.hpp>
 #include <vector>
 
 using std::vector;
@@ -10,9 +11,9 @@ using std::vector;
 class ChatDao
 {
 private:
-    SAConnection &dbConnection;
+    DBConnectionManager &dbConnectionManager;
 public:
-    ChatDao(SAConnection &dbConnection);
+    ChatDao(DBConnectionManager &dcm);
     ~ChatDao();
 
     Integer         createChat(int userID1, int userID2);

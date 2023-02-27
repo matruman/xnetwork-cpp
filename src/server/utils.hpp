@@ -3,7 +3,6 @@
 
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include <winsock2.h>
 #include <boost/beast/version.hpp>
 #include <boost/json.hpp>
 #include <iostream>

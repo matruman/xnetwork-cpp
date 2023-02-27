@@ -4,7 +4,7 @@ project(xnetwork)
 
 set(EXECUTABLE_NAME server)
 
-SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O2")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -g -Og")
 
 find_package(Boost REQUIRED COMPONENTS json URL)
 include_directories(
@@ -17,6 +17,15 @@ include_directories(
 link_directories("C:/SQLAPI/mingw-w64/lib" "C:/SQLAPI/mingw-w64/bin")
 
 add_executable(${EXECUTABLE_NAME}
+
+	src/application/ApplicationContext.cpp
+	src/application/ApplicationContext.hpp
+	src/application/DBConnectionManager.cpp
+	src/application/DBConnectionManager.hpp
+	src/application/SessionManager.cpp
+	src/application/SessionManager.hpp
+	src/application/UserSession.cpp
+	src/application/UserSession.hpp
 
 	src/datatypes/datatypes.cpp
 	src/datatypes/datatypes.hpp
@@ -65,8 +74,6 @@ add_executable(${EXECUTABLE_NAME}
 	src/routes/UploadPost.cpp
 	src/routes/UploadPost.hpp
 	
-	src/server/ApplicationContext.cpp
-	src/server/ApplicationContext.hpp
 	src/server/HttpRequest.cpp
 	src/server/HttpRequest.hpp
 	src/server/HttpResponse.cpp
@@ -81,10 +88,6 @@ add_executable(${EXECUTABLE_NAME}
 	src/server/Session.hpp
 	src/server/send_lambda.cpp
 	src/server/send_lambda.hpp
-	src/server/SessionManager.cpp
-	src/server/SessionManager.hpp
-	src/server/UserSession.cpp
-	src/server/UserSession.hpp
 	src/server/utils.cpp
 	src/server/utils.hpp
 

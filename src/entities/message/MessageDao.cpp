@@ -1,6 +1,6 @@
 #include "MessageDao.hpp"
 
-MessageDao::MessageDao(SAConnection &dbConnection) : dbConnection(dbConnection)
+MessageDao::MessageDao(DBConnectionManager &dcm) : dbConnectionManager(dcm)
 {
 }
 
@@ -10,7 +10,7 @@ MessageDao::~MessageDao()
 
 Integer     MessageDao::save(const Message &message)
 {
-    SACommand command(&dbConnection,
+    SACommand command(dbConnectionManager.getConnection(),
         _TSA("INSERT INTO messages (sender_id, receiver_id, text) VALUES (:1, :2, :3); \
                 SELECT LAST_INSERT_ID()"));
     command << (long) message.getSenderID().get();
@@ -29,7 +29,7 @@ vector<Message>     getFeedPosts(const Integer &userID, int offset);
 vector<Message>     MessageDao::getUserPosts(int userID, int offset)
 {
     vector<Message> vect;
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
     _TSA("SELECT message_id, sender_id, receiver_id, u.username, text, date FROM messages m \
         INNER JOIN users u ON m.sender_id = u.user_id \
         WHERE sender_id=:1 AND receiver_id=0 ORDER BY message_id DESC LIMIT 50 OFFSET :2"));
@@ -45,7 +45,7 @@ vector<Message>     MessageDao::getChatMessages(int mainUserID,
         int converserID, int offset)
 {
     vector<Message> vect;
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
     _TSA("SELECT message_id, sender_id, receiver_id, u.username, text, date FROM messages m \
         INNER JOIN users u ON m.sender_id = u.user_id \
         WHERE (sender_id=:1 AND receiver_id=:2) OR (sender_id=:2 AND receiver_id=:1) \
@@ -63,7 +63,7 @@ vector<Message>     MessageDao::getNewMessages(int mainUserID,
         int converserID, int lastMessageID)
 {
     vector<Message> vect;
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
     _TSA("SELECT message_id, sender_id, receiver_id, u.username, text, date FROM messages m \
         INNER JOIN users u ON m.sender_id = u.user_id \
         WHERE ((sender_id=:1 AND receiver_id=:2) OR (sender_id=:2 AND receiver_id=:1)) \

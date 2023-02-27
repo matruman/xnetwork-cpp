@@ -1,7 +1,7 @@
 #include "UserDao.hpp"
 #include <iostream>
 
-UserDao::UserDao(SAConnection &dbConnection) : dbConnection(dbConnection)
+UserDao::UserDao(DBConnectionManager &dcm) : dbConnectionManager(dcm)
 {
 }
 
@@ -11,7 +11,7 @@ UserDao::~UserDao()
 
 Integer    UserDao::save(const User &user)
 {
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
         _TSA("INSERT INTO users (email, username, password) VALUES (:1, :2, :3); SELECT LAST_INSERT_ID()"));
     command << SAString(user.getEmail().get().c_str());
     command << SAString(user.getUsername().get().c_str());
@@ -25,7 +25,7 @@ Integer    UserDao::save(const User &user)
 
 User    UserDao::getById(int id)
 {
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
     _TSA("SELECT user_id, email, username, password, reg_date, last_login \
         FROM users WHERE user_id=:1"));
     command << (long) id;
@@ -38,7 +38,7 @@ User    UserDao::getById(int id)
 
 User    UserDao::getByEmail(const std::string &email)
 {
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
     _TSA("SELECT user_id, email, username, password, reg_date, last_login \
         FROM users WHERE email=:1"));
     command << SAString(email.c_str());
@@ -53,7 +53,7 @@ vector<UserListElem>    UserDao::findUsers(const std::string &name, int offset)
 {
     vector<UserListElem> vect;
 
-    SACommand command(&dbConnection, 
+    SACommand command(dbConnectionManager.getConnection(), 
     _TSA("SELECT u.user_id, email, username, reg_date, last_login, s1.user_id, s2.user_id FROM users u \
         LEFT JOIN subscriptions s1 ON u.user_id = s1.subscriber_id \
         LEFT JOIN subscriptions s2 ON u.user_id = s2.user_id \

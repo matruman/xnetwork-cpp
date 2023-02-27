@@ -5,9 +5,9 @@
 #include "HttpRequest.hpp"
 #include <iostream>
 
-#include "SessionManager.hpp"
+#include <application/ApplicationContext.hpp>
+#include <application/SessionManager.hpp>
 #include "Router.hpp"
-#include "ApplicationContext.hpp"
 #include "send_lambda.hpp"
 #include "utils.hpp"
 

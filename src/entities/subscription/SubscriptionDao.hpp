@@ -2,14 +2,15 @@
 #define SUBSCRIPTION_DAO_HPP
 
 #include "Subscription.hpp"
+#include <application/DBConnectionManager.hpp>
 #include <SQLAPI.h>
 
 class SubscriptionDao
 {
 private:
-    SAConnection &dbConnection;
+    DBConnectionManager &dbConnectionManager;
 public:
-    SubscriptionDao(SAConnection &dbConnection);
+    SubscriptionDao(DBConnectionManager &dcm);
     ~SubscriptionDao();
 };
 

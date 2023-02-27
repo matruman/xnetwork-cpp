@@ -52,8 +52,6 @@ void RequestHandler::handle_request(const std::string doc_root,
     URLParams request_params(req.target());
     string target = request_params.path();
 
-    std::cout << "Target: " << req.target() << " " << request_params.path() << std::endl;
-
     // Request path must be absolute and not contain "..".
     if( target.empty() ||
         target[0] != '/' ||

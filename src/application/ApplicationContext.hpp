@@ -8,20 +8,17 @@
 #include <entities/user/UserDao.hpp>
 #include <entities/message/MessageDao.hpp>
 #include <entities/chat/ChatDao.hpp>
+#include "DBConnectionManager.hpp"
 #include "SessionManager.hpp"
-
-#define DB_NAME "xnetwork" 
-#define DB_USER "root"
-#define DB_PASSWORD "12345678"
 
 class ApplicationContext
 {
 private:
-    SessionManager  sessionManager;
-    SAConnection    dbConnection;
-    UserDao         userDao;
-    MessageDao      messageDao;
-    ChatDao         chatDao;
+    SessionManager          sessionManager;
+    DBConnectionManager     dbConnectionManager;
+    UserDao                 userDao;
+    MessageDao              messageDao;
+    ChatDao                 chatDao;
 
 public:
     void init();
@@ -32,7 +29,6 @@ public:
     UserDao&            getUserDao();
     MessageDao&         getMessageDao();
     ChatDao&            getChatDao();
-
 };
 
 #endif

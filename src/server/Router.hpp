@@ -15,14 +15,14 @@ class Router
 {
 private:
     ApplicationContext &context;
-    std::unordered_map<std::string, std::shared_ptr<AbstractRoute>>  routes;
+    std::unordered_map<std::string, std::unique_ptr<AbstractRoute>>  routes;
 public:
     Router(ApplicationContext &context);
     void    route(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_);
 
 private:
-    std::shared_ptr<AbstractRoute>  makeRoute(AbstractRoute *r);
+    std::unique_ptr<AbstractRoute>  makeRoute(AbstractRoute *r);
 };
 
 #endif

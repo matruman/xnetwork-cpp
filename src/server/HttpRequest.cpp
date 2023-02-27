@@ -7,13 +7,11 @@ namespace http = beast::http;           // from <boost/beast/http.hpp>
 
 HttpRequest::HttpRequest()
 {
-    std::cout << "create http request" << std::endl;
     msg = new http::message<true, http::string_body>();
 }
 
 HttpRequest::~HttpRequest()
 {
-    std::cout << "delete http request" << std::endl;
     delete msg;
 }
 

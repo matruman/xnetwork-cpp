@@ -27,16 +27,15 @@ Router::Router(ApplicationContext &context) : context(context)
 void    Router::route(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
 {
-    std::cout << "path: " << params.path() << "$" << std::endl;
     auto it = routes.find(params.path());
     if (it == routes.end())
         throw std::invalid_argument("No route for requested path");
     
-    std::shared_ptr<AbstractRoute> &resolver = it->second;
+    std::unique_ptr<AbstractRoute> &resolver = it->second;
     resolver->resolve(req, params, session, send_);
 }
 
-std::shared_ptr<AbstractRoute>  Router::makeRoute(AbstractRoute *r)
+std::unique_ptr<AbstractRoute>  Router::makeRoute(AbstractRoute *r)
 {
-    return std::shared_ptr<AbstractRoute>(r);
+    return std::unique_ptr<AbstractRoute>(r);
 }

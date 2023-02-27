@@ -3,6 +3,7 @@
 
 #include "User.hpp"
 #include "UserListElem.hpp"
+#include <application/DBConnectionManager.hpp>
 #include <SQLAPI.h>
 #include <vector>
 
@@ -11,9 +12,9 @@ using std::vector;
 class UserDao
 {
 private:
-    SAConnection &dbConnection;
+    DBConnectionManager &dbConnectionManager;
 public:
-    UserDao(SAConnection &dbConnection);
+    UserDao(DBConnectionManager &dcm);
     ~UserDao();
 
     Integer                 save(const User &user);

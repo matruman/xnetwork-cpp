@@ -2,6 +2,7 @@
 #define MESSAGE_DAO_HPP
 
 #include "Message.hpp"
+#include <application/DBConnectionManager.hpp>
 #include <SQLAPI.h>
 #include <vector>
 
@@ -10,10 +11,10 @@ using std::vector;
 class MessageDao
 {
 private:
-    SAConnection &dbConnection;
+    DBConnectionManager &dbConnectionManager;
 
 public:
-    MessageDao(SAConnection &dbConnection);
+    MessageDao(DBConnectionManager &dcm);
     ~MessageDao();
 
     Integer save(const Message &message);
