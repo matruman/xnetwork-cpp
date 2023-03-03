@@ -4,7 +4,7 @@ project(xnetwork)
 
 set(EXECUTABLE_NAME server)
 
-SET(CMAKE_CXX_FLAGS "-std=c++11 -g -Og")
+SET(CMAKE_CXX_FLAGS "-std=c++14 -g -Og")
 
 find_package(Boost REQUIRED COMPONENTS json URL)
 include_directories(

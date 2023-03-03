@@ -3,6 +3,8 @@
 
 #include <random>
 #include <unordered_map>
+#include <shared_mutex>
+#include <mutex>
 #include "UserSession.hpp"
 
 #define SESSION_ID_LENGTH 16
@@ -14,18 +16,19 @@ class SessionManager
 {
 private:
     unordered_map<string, UserSession>  sessions;
-    std::random_device rd;
-    std::mt19937 generator;
-    UserSession nullSession;
+    std::random_device                  rd;
+    std::mt19937                        generator;
+    UserSession                         nullSession;
+    std::shared_timed_mutex             mtx;
 
 public:
     SessionManager();
     ~SessionManager();
 
-    string  addSession(UserSession&& session);
-    string  generateRandomString(int len);
-    string  getSessionString(string sessionID);
-    UserSession&  getSession(string sessionString);
+    string          addSession(UserSession&& session);
+    string          generateRandomString(int len);
+    string          getSessionString(string sessionID);
+    UserSession&    getSession(string sessionString);
 };
 
 #endif

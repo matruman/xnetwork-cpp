@@ -11,6 +11,9 @@ SessionManager::~SessionManager()
 string  SessionManager::addSession(UserSession&& session)
 {
     string sessionID = generateRandomString(SESSION_ID_LENGTH);
+
+    // Only one thread can write to map at the moment and no one can read during the writing
+    std::unique_lock<std::shared_timed_mutex> lock(mtx);
     sessions.emplace(sessionID, session);
     return getSessionString(sessionID);
 }
@@ -35,7 +38,6 @@ string  SessionManager::getSessionString(string sessionID)
 {
     string res{"SessionID="};
     res += sessionID;
-    // res += "; SameSite=None; Secure";
     return res;
 }
 
@@ -43,6 +45,8 @@ UserSession&  SessionManager::getSession(string sessionString)
 {
     string sessionID = sessionString.substr(10, SESSION_ID_LENGTH);
 
+    // Multiple threads can read from map concurrently if there is no writing at the moment
+    std::shared_lock<std::shared_timed_mutex> lock(mtx);
     auto it = sessions.find(sessionID);
     if (it == sessions.end())
         return nullSession;
