@@ -3,6 +3,7 @@
 
 #include <random>
 #include <unordered_map>
+#include <memory>
 #include <shared_mutex>
 #include <mutex>
 #include "UserSession.hpp"
@@ -11,15 +12,18 @@
 
 using   std::string;
 using   std::unordered_map;
+using   std::shared_ptr;
+
 
 class SessionManager
 {
 private:
-    unordered_map<string, UserSession>  sessions;
-    std::random_device                  rd;
-    std::mt19937                        generator;
-    UserSession                         nullSession;
-    std::shared_timed_mutex             mtx;
+    unordered_map<string, shared_ptr<UserSession>>  sessions;
+    unordered_map<int, shared_ptr<UserSession>>     sessionsByUserID;
+    std::random_device                              rd;
+    std::mt19937                                    generator;
+    UserSession                                     nullSession;
+    std::shared_timed_mutex                         mtx;
 
 public:
     SessionManager();
@@ -28,7 +32,9 @@ public:
     string          addSession(UserSession&& session);
     string          generateRandomString(int len);
     string          getSessionString(string sessionID);
-    UserSession&    getSession(string sessionString);
+    UserSession&    getSessionByCookie(string sessionString);
+    UserSession&    getSessionByUserID(int userID);
+
 };
 
 #endif

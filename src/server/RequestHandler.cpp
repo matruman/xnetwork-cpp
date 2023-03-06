@@ -1,7 +1,7 @@
 #include "RequestHandler.hpp"
-// #include "Session.hpp"
 #include "send_lambda.hpp"
 #include <datatypes/URLParams.hpp>
+#include <server/websocket_session.hpp>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -41,7 +41,7 @@ std::string     RequestHandler::path_cat(string base, string path)
 // request. The type of the response object depends on the
 // contents of the request, so the interface requires the
 // caller to pass a generic lambda for receiving the response.
-void RequestHandler::handle_request(const std::string doc_root, 
+void    RequestHandler::handle_request(const std::string doc_root, 
     HttpRequest& req, send_lambda& send_)
 {
     std::cout << "Request handling started\n"; 
@@ -64,7 +64,10 @@ void RequestHandler::handle_request(const std::string doc_root,
     {
         return send_(unauthorized("Unauthorized", req));
     }
-    UserSession session = req.findHeader("Cookie") ? context.getSessionManager().getSession(req.getHeader("Cookie")) : UserSession();
+    UserSession &session = req.findHeader("Cookie") ? 
+        context.getSessionManager().getSessionByCookie(req.getHeader("Cookie")) :
+        context.getSessionManager().getSessionByCookie("");
+    
     if (session.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
         return send_(unauthorized("Unauthorized", req));
 
@@ -92,4 +95,21 @@ void RequestHandler::handle_request(const std::string doc_root,
     {
         return send_(server_error(target, req));
     }
+}
+
+void    RequestHandler::handle_ws_upgrade(std::shared_ptr<websocket_session> wss, HttpRequest& req)
+{
+    UserSession &session = req.findHeader("Cookie") ? 
+        context.getSessionManager().getSessionByCookie(req.getHeader("Cookie")) :
+        context.getSessionManager().getSessionByCookie("");
+    std::cout << "handle_ws_upgrade" << std::endl;
+    
+    if (session.isNull())
+        return;  
+    
+    wss->do_accept(std::move(*req.get()),
+        [sess = &session](std::shared_ptr<websocket_session> wss_, beast::error_code ec) {
+            sess->setWsSession(wss_);
+            std::cout << "websocket accepted" << std::endl;
+        });
 }

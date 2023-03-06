@@ -12,7 +12,8 @@ HttpRequest::HttpRequest()
 
 HttpRequest::~HttpRequest()
 {
-    delete msg;
+    if (msg != nullptr)
+        delete msg;
 }
 
 std::string     HttpRequest::method()
@@ -59,9 +60,9 @@ void            HttpRequest::clear()
     *msg = http::message<true, http::string_body>();
 }
 
-boost::beast::http::message<true, boost::beast::http::basic_string_body<
-        char, std::char_traits<char>, std::allocator<char>>, 
-        boost::beast::http::basic_fields<std::allocator<char>>>* HttpRequest::get()
+http::message<true, http::basic_string_body<
+    char, std::char_traits<char>, std::allocator<char>>, 
+    http::basic_fields<std::allocator<char>>>* HttpRequest::get()
 {
     return msg;
 }

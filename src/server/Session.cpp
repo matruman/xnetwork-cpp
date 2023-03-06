@@ -1,5 +1,9 @@
-#include "Session.hpp"
+#include <boost/beast/websocket.hpp>
+#include "session.hpp"
 #include "RequestHandler.hpp"
+#include "websocket_session.hpp"
+
+namespace websocket = beast::websocket;         // from <boost/beast/websocket.hpp>
 
 session::session(RequestHandler &handler, tcp::socket&& socket, 
     std::shared_ptr<std::string const> const& doc_root) 
@@ -44,6 +48,13 @@ void    session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 {
     boost::ignore_unused(bytes_transferred);
 
+    if (websocket::is_upgrade(*req_.get()))
+    {
+        handler.handle_ws_upgrade(
+            std::make_shared<websocket_session>(stream_.release_socket()), req_);
+        return;
+    }
+
     // This means they closed the connection
     if(ec == http::error::end_of_stream)
         return do_close();
@@ -51,7 +62,7 @@ void    session::on_read(beast::error_code ec, std::size_t bytes_transferred)
     if(ec)
         return fail(ec, "read");
 
-    // Send the response
+    // Handle request and send the response
     handler.handle_request(*doc_root_, req_, lambda_);
 }
 

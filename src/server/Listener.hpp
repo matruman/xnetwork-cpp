@@ -6,7 +6,7 @@
 #include <boost/asio/strand.hpp>
 
 #include "utils.hpp"
-#include "Session.hpp"
+#include "session.hpp"
 #include "RequestHandler.hpp"
 #include <application/ApplicationContext.hpp>
 

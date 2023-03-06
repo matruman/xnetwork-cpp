@@ -14,7 +14,8 @@ string  SessionManager::addSession(UserSession&& session)
 
     // Only one thread can write to map at the moment and no one can read during the writing
     std::unique_lock<std::shared_timed_mutex> lock(mtx);
-    sessions.emplace(sessionID, session);
+    sessions.emplace(sessionID, std::make_shared<UserSession>(std::move(session)));
+    sessionsByUserID.emplace(session.getUserID(), sessions.at(sessionID));
     return getSessionString(sessionID);
 }
 
@@ -41,14 +42,27 @@ string  SessionManager::getSessionString(string sessionID)
     return res;
 }
 
-UserSession&  SessionManager::getSession(string sessionString)
+UserSession&  SessionManager::getSessionByCookie(string cookie)
 {
-    string sessionID = sessionString.substr(10, SESSION_ID_LENGTH);
+    if (cookie.length() != 10 + SESSION_ID_LENGTH)
+        return nullSession;
+
+    string sessionID = cookie.substr(10, SESSION_ID_LENGTH);
 
     // Multiple threads can read from map concurrently if there is no writing at the moment
     std::shared_lock<std::shared_timed_mutex> lock(mtx);
     auto it = sessions.find(sessionID);
     if (it == sessions.end())
         return nullSession;
-    return it->second;
+    return *it->second.get();
+}
+
+UserSession&  SessionManager::getSessionByUserID(int userID)
+{
+    // Multiple threads can read from map concurrently if there is no writing at the moment
+    std::shared_lock<std::shared_timed_mutex> lock(mtx);
+    auto it = sessionsByUserID.find(userID);
+    if (it == sessionsByUserID.end())
+        return nullSession;
+    return *it->second.get();
 }

@@ -31,8 +31,9 @@ public:
     // request. The type of the response object depends on the
     // contents of the request, so the interface requires the
     // caller to pass a generic lambda for receiving the response.
-    void handle_request(const std::string doc_root, HttpRequest& req, 
-        send_lambda& send_);
+    void    handle_request(const std::string doc_root, 
+        HttpRequest& req, send_lambda& send_);
+    void    handle_ws_upgrade(std::shared_ptr<websocket_session> wss, HttpRequest& req);
 };
 
 #endif

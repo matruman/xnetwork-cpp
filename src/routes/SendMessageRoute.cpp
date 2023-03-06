@@ -34,6 +34,14 @@ void    SendMessageRoute::resolve(HttpRequest& req, URLParams& params,
     json::object payload;
     payload.emplace("status", true);
     payload.emplace("message_id", message_id.get());
+
+    UserSession &reseiverSession = getContext().getSessionManager().getSessionByUserID(converser_id);
+    
+    json::object notification;
+    notification.emplace("type", "message");
+    notification.emplace("sender_id", session.getUserID());
+    if (!reseiverSession.isNull())
+        reseiverSession.sendMessage(json::serialize(notification));
     
     send_(success_response(payload, req));
 }

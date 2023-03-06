@@ -1,13 +1,13 @@
 #ifndef SESSION_HPP
 #define SESSION_HPP
 
-#include "HttpRequest.hpp"
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <memory>
 
+#include "HttpRequest.hpp"
 #include "utils.hpp"
 #include "send_lambda.hpp"
 

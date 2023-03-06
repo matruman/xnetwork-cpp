@@ -78,18 +78,20 @@ add_executable(${EXECUTABLE_NAME}
 	src/server/HttpRequest.hpp
 	src/server/HttpResponse.cpp
 	src/server/HttpResponse.hpp
-	src/server/Listener.cpp
-	src/server/Listener.hpp
+	src/server/listener.cpp
+	src/server/listener.hpp
 	src/server/RequestHandler.cpp
 	src/server/RequestHandler.hpp
 	src/server/Router.cpp
 	src/server/Router.hpp
-	src/server/Session.cpp
-	src/server/Session.hpp
+	src/server/session.cpp
+	src/server/session.hpp
 	src/server/send_lambda.cpp
 	src/server/send_lambda.hpp
 	src/server/utils.cpp
 	src/server/utils.hpp
+	src/server/websocket_session.cpp
+	src/server/websocket_session.hpp
 
 	src/main.cpp
 )
