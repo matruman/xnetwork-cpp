@@ -1,7 +1,7 @@
 #include "AuthRoute.hpp"
 #include <string> 
 
-AuthRoute::AuthRoute(ApplicationContext &context) : AbstractRoute(context)
+AuthRoute::AuthRoute(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

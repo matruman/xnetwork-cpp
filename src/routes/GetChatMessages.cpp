@@ -1,6 +1,6 @@
 #include "GetChatMessages.hpp"
 
-GetChatMessages::GetChatMessages(ApplicationContext &context) : AbstractRoute(context)
+GetChatMessages::GetChatMessages(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

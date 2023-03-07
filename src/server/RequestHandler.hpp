@@ -17,11 +17,11 @@ namespace http = beast::http;           // from <boost/beast/http.hpp>
 class RequestHandler {
 
 private:
-    ApplicationContext &context;
-    Router  router;
+    std::shared_ptr<ApplicationContext> context;
+    std::unique_ptr<Router>             router;
 
 public:
-    RequestHandler(ApplicationContext &context);
+    RequestHandler(std::shared_ptr<ApplicationContext> context_, std::unique_ptr<Router>  &&router_);
 
     // Append an HTTP rel-path to a local filesystem path.
     // The returned path is normalized for the platform.

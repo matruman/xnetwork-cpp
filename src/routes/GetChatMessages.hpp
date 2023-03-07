@@ -6,7 +6,7 @@
 class GetChatMessages : public AbstractRoute
 {
 public:
-    GetChatMessages(ApplicationContext &context);
+    GetChatMessages(std::shared_ptr<ApplicationContext> context);
     ~GetChatMessages();
 
     void resolve(HttpRequest& req, URLParams& params,

@@ -15,11 +15,11 @@ using std::vector;
 class AbstractRoute
 {
 private:
-    ApplicationContext &context;
+    std::shared_ptr<ApplicationContext> context;
 public:
-    AbstractRoute(ApplicationContext &context);
+    AbstractRoute(std::shared_ptr<ApplicationContext> context);
 
-    ApplicationContext& getContext() const;
+    ApplicationContext& getContext();
     virtual ~AbstractRoute() = default;
     virtual void resolve(HttpRequest& req, URLParams& params,
         UserSession& session, send_lambda& send_) = 0;

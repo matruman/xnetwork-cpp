@@ -6,7 +6,7 @@
 class GetChatList : public AbstractRoute
 {
 public:
-    GetChatList(ApplicationContext &context);
+    GetChatList(std::shared_ptr<ApplicationContext> context);
     ~GetChatList();
 
     void resolve(HttpRequest& req, URLParams& params,

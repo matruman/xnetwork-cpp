@@ -4,7 +4,35 @@
 
 #include <server/listener.hpp>
 
+#include <routes/AuthCheck.hpp>
+#include <routes/AuthRoute.hpp>
+#include <routes/GetChatList.hpp>
+#include <routes/GetChatMessages.hpp>
+#include <routes/GetNewMessages.hpp>
+#include <routes/GetOwnPosts.hpp>
+#include <routes/GetUserList.hpp>
+#include <routes/SendMessageRoute.hpp>
+#include <routes/RegistrationRoute.hpp>
+#include <routes/UploadPost.hpp>
+
 namespace net = boost::asio;            // from <boost/asio.hpp>
+
+std::unique_ptr<Router>     makeRouter(std::shared_ptr<ApplicationContext> context)
+{
+    std::unique_ptr<Router> router = std::make_unique<Router>(context);
+
+    router->addRoute("/auth", std::make_unique<AuthRoute>(context));
+    router->addRoute("/authCheck", std::make_unique<AuthCheck>(context));
+    router->addRoute("/getChatList", std::make_unique<GetChatList>(context));
+    router->addRoute("/getChatMessages", std::make_unique<GetChatMessages>(context));
+    router->addRoute("/getNewMessages", std::make_unique<GetNewMessages>(context));
+    router->addRoute("/getOwnPosts", std::make_unique<GetOwnPosts>(context));
+    router->addRoute("/getUserList", std::make_unique<GetUserList>(context));
+    router->addRoute("/sendMessage", std::make_unique<SendMessageRoute>(context));
+    router->addRoute("/postSend", std::make_unique<UploadPost>(context));
+    router->addRoute("/register", std::make_unique<RegistrationRoute>(context));
+    return router;
+}
 
 int main(int argc, char* argv[])
 {
@@ -24,11 +52,11 @@ int main(int argc, char* argv[])
     // The io_context is required for all I/O
     net::io_context ioc{threads};
 
+    std::shared_ptr<ApplicationContext> context = std::make_shared<ApplicationContext>();
+
     // Create and launch a listening port
-    std::make_shared<listener>(
-        ioc,
-        tcp::endpoint{address, port},
-        doc_root)->run();
+    std::make_shared<listener>(ioc, tcp::endpoint{address, port},
+        doc_root, context, makeRouter(context))->run();
 
     // Run the I/O service on the requested number of threads
     std::vector<std::thread> v;

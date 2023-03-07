@@ -6,7 +6,7 @@
 class AuthCheck : public AbstractRoute
 {
 public:
-    AuthCheck(ApplicationContext &context);
+    AuthCheck(std::shared_ptr<ApplicationContext> context);
     ~AuthCheck();
 
     void resolve(HttpRequest& req, URLParams& params,

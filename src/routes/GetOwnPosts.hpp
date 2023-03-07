@@ -6,7 +6,7 @@
 class GetOwnPosts : public AbstractRoute
 {
 public:
-    GetOwnPosts(ApplicationContext &context);
+    GetOwnPosts(std::shared_ptr<ApplicationContext> context);
     ~GetOwnPosts();
 
     void resolve(HttpRequest& req, URLParams& params,

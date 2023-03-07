@@ -1,6 +1,6 @@
 #include "GetUserList.hpp"
 
-GetUserList::GetUserList(ApplicationContext &context) : AbstractRoute(context)
+GetUserList::GetUserList(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

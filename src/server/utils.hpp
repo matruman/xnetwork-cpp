@@ -13,8 +13,6 @@ namespace json = boost::json;
 
 using std::string;
 
-// // Return a reasonable mime type based on the extension of a file.
-// beast::string_view  mime_type(beast::string_view path);
 
 // Set CORS headers to request.
 void            set_cors(HttpResponse &res);

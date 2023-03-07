@@ -6,7 +6,7 @@
 class AuthRoute : public AbstractRoute
 {
 public:
-    AuthRoute(ApplicationContext &context);
+    AuthRoute(std::shared_ptr<ApplicationContext> context);
     ~AuthRoute();
 
     void resolve(HttpRequest& req, URLParams& params,

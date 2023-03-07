@@ -2,7 +2,7 @@
 
 using std::string;
 
-UploadPost::UploadPost(ApplicationContext &context) : AbstractRoute(context)
+UploadPost::UploadPost(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

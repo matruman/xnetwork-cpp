@@ -6,7 +6,7 @@
 class GetNewMessages : public AbstractRoute
 {
 public:
-    GetNewMessages(ApplicationContext &context);
+    GetNewMessages(std::shared_ptr<ApplicationContext> context);
     ~GetNewMessages();
 
     void resolve(HttpRequest& req, URLParams& params,

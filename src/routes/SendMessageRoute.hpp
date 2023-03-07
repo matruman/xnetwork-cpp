@@ -6,7 +6,7 @@
 class SendMessageRoute : public AbstractRoute
 {
 public:
-    SendMessageRoute(ApplicationContext &context);
+    SendMessageRoute(std::shared_ptr<ApplicationContext> context);
     ~SendMessageRoute();
 
     void resolve(HttpRequest& req, URLParams& params,

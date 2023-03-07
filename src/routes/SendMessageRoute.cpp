@@ -1,6 +1,6 @@
 #include "SendMessageRoute.hpp"
 
-SendMessageRoute::SendMessageRoute(ApplicationContext &context) : AbstractRoute(context)
+SendMessageRoute::SendMessageRoute(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

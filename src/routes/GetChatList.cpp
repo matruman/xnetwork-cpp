@@ -1,6 +1,6 @@
 #include "GetChatList.hpp"
 
-GetChatList::GetChatList(ApplicationContext &context) : AbstractRoute(context)
+GetChatList::GetChatList(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

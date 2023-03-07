@@ -2,7 +2,7 @@
 
 using std::string;
 
-RegistrationRoute::RegistrationRoute(ApplicationContext &context) : AbstractRoute(context)
+RegistrationRoute::RegistrationRoute(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

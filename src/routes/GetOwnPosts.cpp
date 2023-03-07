@@ -1,7 +1,7 @@
 #include "GetOwnPosts.hpp"
 #include <entities/message/MessageDao.hpp>
 
-GetOwnPosts::GetOwnPosts(ApplicationContext &context) : AbstractRoute(context)
+GetOwnPosts::GetOwnPosts(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

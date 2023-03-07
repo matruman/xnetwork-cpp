@@ -1,6 +1,6 @@
 #include "AuthCheck.hpp"
 
-AuthCheck::AuthCheck(ApplicationContext &context) : AbstractRoute(context)
+AuthCheck::AuthCheck(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

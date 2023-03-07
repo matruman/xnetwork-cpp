@@ -1,6 +1,6 @@
 #include "GetNewMessages.hpp"
 
-GetNewMessages::GetNewMessages(ApplicationContext &context) : AbstractRoute(context)
+GetNewMessages::GetNewMessages(std::shared_ptr<ApplicationContext> context) : AbstractRoute(context)
 {
 }
 

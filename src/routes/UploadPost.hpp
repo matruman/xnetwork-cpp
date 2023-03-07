@@ -6,7 +6,7 @@
 class UploadPost : public AbstractRoute
 {
 public:
-    UploadPost(ApplicationContext &context);
+    UploadPost(std::shared_ptr<ApplicationContext> context);
     ~UploadPost();
 
     void resolve(HttpRequest& req, URLParams& params,

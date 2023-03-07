@@ -9,7 +9,8 @@
 using std::string;
 using std::vector;
 
-RequestHandler::RequestHandler(ApplicationContext &context_) : context(context_), router(context_)
+RequestHandler::RequestHandler(std::shared_ptr<ApplicationContext> context_,
+        std::unique_ptr<Router>  &&router_) : context(context_), router(std::move(router_))
 {
 }
 
@@ -65,8 +66,8 @@ void    RequestHandler::handle_request(const std::string doc_root,
         return send_(unauthorized("Unauthorized", req));
     }
     UserSession &session = req.findHeader("Cookie") ? 
-        context.getSessionManager().getSessionByCookie(req.getHeader("Cookie")) :
-        context.getSessionManager().getSessionByCookie("");
+        context->getSessionManager().getSessionByCookie(req.getHeader("Cookie")) :
+        context->getSessionManager().getSessionByCookie("");
     
     if (session.isNull() && std::find(allowed.begin(), allowed.end(), target) == allowed.end())
         return send_(unauthorized("Unauthorized", req));
@@ -74,7 +75,7 @@ void    RequestHandler::handle_request(const std::string doc_root,
     // Respond to GET request
     try
     {
-        router.route(req, request_params, session, send_);
+        router->route(req, request_params, session, send_);
     }
     catch (std::invalid_argument &ex)
     {
@@ -100,8 +101,8 @@ void    RequestHandler::handle_request(const std::string doc_root,
 void    RequestHandler::handle_ws_upgrade(std::shared_ptr<websocket_session> wss, HttpRequest& req)
 {
     UserSession &session = req.findHeader("Cookie") ? 
-        context.getSessionManager().getSessionByCookie(req.getHeader("Cookie")) :
-        context.getSessionManager().getSessionByCookie("");
+        context->getSessionManager().getSessionByCookie(req.getHeader("Cookie")) :
+        context->getSessionManager().getSessionByCookie("");
     std::cout << "handle_ws_upgrade" << std::endl;
     
     if (session.isNull())

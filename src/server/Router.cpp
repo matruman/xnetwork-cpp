@@ -1,28 +1,14 @@
 #include "Router.hpp"
-#include <routes/AuthCheck.hpp>
-#include <routes/AuthRoute.hpp>
-#include <routes/GetChatList.hpp>
-#include <routes/GetChatMessages.hpp>
-#include <routes/GetNewMessages.hpp>
-#include <routes/GetOwnPosts.hpp>
-#include <routes/GetUserList.hpp>
-#include <routes/SendMessageRoute.hpp>
-#include <routes/RegistrationRoute.hpp>
-#include <routes/UploadPost.hpp>
 
-Router::Router(ApplicationContext &context) : context(context)
+Router::Router(std::shared_ptr<ApplicationContext> context) : context(context)
 {
-    routes.emplace("/auth", makeRoute(new AuthRoute(context)));
-    routes.emplace("/authCheck", makeRoute(new AuthCheck(context)));
-    routes.emplace("/getChatList", makeRoute(new GetChatList(context)));
-    routes.emplace("/getChatMessages", makeRoute(new GetChatMessages(context)));
-    routes.emplace("/getNewMessages", makeRoute(new GetNewMessages(context)));
-    routes.emplace("/getOwnPosts", makeRoute(new GetOwnPosts(context)));
-    routes.emplace("/getUserList", makeRoute(new GetUserList(context)));
-    routes.emplace("/sendMessage", makeRoute(new SendMessageRoute(context)));
-    routes.emplace("/postSend", makeRoute(new UploadPost(context)));
-    routes.emplace("/register", makeRoute(new RegistrationRoute(context)));
 }
+
+void    Router::addRoute(const char *path, std::unique_ptr<AbstractRoute> &&route)
+{
+    routes.emplace(path, std::move(route));
+}
+
 
 void    Router::route(HttpRequest& req, URLParams& params,
                         UserSession& session, send_lambda& send_)
@@ -33,9 +19,4 @@ void    Router::route(HttpRequest& req, URLParams& params,
     
     std::unique_ptr<AbstractRoute> &resolver = it->second;
     resolver->resolve(req, params, session, send_);
-}
-
-std::unique_ptr<AbstractRoute>  Router::makeRoute(AbstractRoute *r)
-{
-    return std::unique_ptr<AbstractRoute>(r);
 }

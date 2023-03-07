@@ -8,7 +8,7 @@ class RegistrationRoute : public AbstractRoute
 private:
     /* data */
 public:
-    RegistrationRoute(ApplicationContext &context);
+    RegistrationRoute(std::shared_ptr<ApplicationContext> context);
     ~RegistrationRoute();
 
     void resolve(HttpRequest& req, URLParams& params,

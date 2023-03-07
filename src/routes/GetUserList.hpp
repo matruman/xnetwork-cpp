@@ -6,7 +6,7 @@
 class GetUserList : public AbstractRoute
 {
 public:
-    GetUserList(ApplicationContext &context);
+    GetUserList(std::shared_ptr<ApplicationContext> context);
     ~GetUserList();
 
     void resolve(HttpRequest& req, URLParams& params,
